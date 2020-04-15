@@ -1123,7 +1123,7 @@ mysql 查询缓存的缓存机制（query cache）简单来说就是缓存sql �
 
 ### 查看MYSQL的缓存信息
 
-![](D:\必看\MYSQL\MYSQL\mysql.assets\image-20200408143253604.png)
+![](http://q8sats5bw.bkt.clouddn.com/image-20200408143253604.png)
 
 ![](http://q8sats5bw.bkt.clouddn.com/image-20200408143343566.png)
 
