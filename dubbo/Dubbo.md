@@ -171,5 +171,7 @@ provider:
 
 ## 服务暴露延迟
 
+![](http://q8sats5bw.bkt.clouddn.com/20200422144714.png)
 
+## 消费者的异步调用
 
