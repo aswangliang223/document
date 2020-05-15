@@ -220,7 +220,7 @@ vector 初始化容量为10，vector 扩容是有增长因子，如果指定了�
 
 如果需要在遍历时操作列表，其中一种解决办法就是使用CopyOnWriteArrayList，它的迭代器永远不会抛出 ConcurrentModificationException异常。原因在于：**在创建一个迭代器时，它会拷贝一份列表数据，这样即使操作列表也不会影响迭代器，缺点和前面一样，可能无法反映数据的最新状态。**
 
-CopyrightOnWriteArrayList 底层也是一个数据，不同之处在于它被volatile修饰，对他的读取，修改具有可见性、有序性，但是不保证原子性，因此可以不用加同步块，直接读取。
+CopyrightOnWriteArrayList 底层也是一个数组，不同之处在于它被volatile修饰，对他的读取，修改具有可见性、有序性，但是不保证原子性，因此可以不用加同步块，直接读取。
 
 ## ReentrantLock
 
