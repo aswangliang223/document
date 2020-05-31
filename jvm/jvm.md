@@ -53,7 +53,7 @@ java代码编译成字节码文件，动态编译和解释为机器码的过程�
 
 编译器和解释器协调工作流程分析：
 
-![image-20200529200708535](https://raw.githubusercontent.com/aswangliang223/document/master/img/image-20200529200708535.png?token=AKVPZHPOMTXNWZ3REYNYQW262D5TI)
+![image-20200514095020976](\upload\image-20200514095020976.png)
 
 ## JIT即使编译器
 
@@ -137,24 +137,24 @@ jmap -histo 进程号
 
 ![image-20200514111023295](upload\image-20200514111023295.png)
 
-| 类型                | 名称                       | 数量                  |
-| ------------------- | -------------------------- | --------------------- |
-| u4（u4代表4个字节） | magic（魔数）              | 1                     |
-| u2                  | minor_version(jdk次版本哈) | 1                     |
-| u2                  | major_version(jdk主版本号) | 1                     |
-| u2                  | constant_pool(常量池)      | 1                     |
-| cp_info             | constant_pool(常量表)      | constant_pool_count-1 |
-| u2                  | access_flags(访问标志)     | 1                     |
-| u2                  | this_class(类引用)         | 1                     |
-| u2                  | super_class(父类引用)      | 1                     |
-| u2                  | interface_count(接口数量)  | 1                     |
-| u2                  | interfaces(接口数组)       | interfaces_count      |
-| u2                  | fields_count(字段数量)     | 1                     |
-| field_info          | fields(字段表)             | fields_count          |
-| u2                  | methods_count(方法数量)    | 1                     |
-| method_info         | methods(方法表)            | methods_count         |
-| u2                  | attributes_count(属性数量) | 1                     |
-| attribute_info      | attributes(属性表)         | attributes_count      |
+| 类型           | 名称                       | 数量                  |
+| -------------- | -------------------------- | --------------------- |
+| u4             | magic（魔数）              | 1                     |
+| u2             | minor_version(jdk次版本哈) | 1                     |
+| u2             | major_version(jdk主版本号) | 1                     |
+| u2             | constant_pool(常量池)      | 1                     |
+| cp_info        | constant_pool(常量表)      | constant_pool_count-1 |
+| u2             | access_flags(访问标志)     | 1                     |
+| u2             | this_class(类引用)         | 1                     |
+| u2             | super_class(父类引用)      | 1                     |
+| u2             | interface_count(接口数量)  | 1                     |
+| u2             | interfaces(接口数组)       | interfaces_count      |
+| u2             | fields_count(字段数量)     | 1                     |
+| field_info     | fields(字段表)             | fields_count          |
+| u2             | methods_count(方法数量)    | 1                     |
+| method_info    | methods(方法表)            | methods_count         |
+| u2             | attributes_count(属性数量) | 1                     |
+| attribute_info | attributes(属性表)         | attributes_count      |
 
 #### 魔数
 
@@ -303,7 +303,7 @@ String[] str = new String[10];
 
 - 通过一个类的全限定性类名来获取定义该类的二进制字节流文件(class文件),在程序运行过程中，当要访问一个类的时候，如果发现这个类没有被加载，，并且满足类的初始化条件时，就根据要被初始化的这个类的全限定名找到该类的二进制字节流，开始加载过程
 - 将这个字节流的静态存储结构转化成方法区的运行时数据结构
-- 在内存中创建一个java.lang.Class对象，作为该方法区该类的各种数据的访问入口
+- 在内存中创建一个java.lang.Class对象，则为该方法区该类的各种数据的访问入口
 
 **HotSpot虚拟机将Class对象存放在方法区**
 
@@ -313,21 +313,21 @@ String[] str = new String[10];
 
 **通过 -Xverify:none设置验证关闭**
 
-**验证的目的：保证二进制字节流中的信息符合虚拟机规范，没有安全问题**
+**验证的目的：保证二级制字节流中的信息符合虚拟机规范，没有安全问题**
 
 - 文件格式验证（KAFEBABE 魔数验证）
 - 元数据验证：对字节码描述信息进行语义分析，确保符合java规范
 - 字节码验证
 - 符号引用验证
 
-![image-20200529202803093](upload\image-20200529202803093.png)
+![image-20200515123512772](upload\image-20200515123512772.png)
 
 #### 准备
 
 - 为已经在方法区中的类的静态成员变量分配内存
 - 为静态成员变量设置初始值，初始值为0、false、null等
 
-![image-20200529203220815](upload/image-20200529203220815.png)
+![image-20200512113319234](upload\image-20200512113319234.png)
 
 #### 解析
 
@@ -346,11 +346,11 @@ String[] str = new String[10];
 ```java
 public class Test{
     static{
-        i = 0;
-        system.out.println(i); //编译失败： "非法向前引用",静态代码块只能访问到出现在静态代码块之前的变量，定义在它之后的变量，在前面的静态语句块中可以赋值，但是不能访问
+        static i = 0;
+    	system.out.println(i); //编译失败： "非法向前引用"
     }
-
-     static int i = 1; 
+    
+   static int i = 1;
 
 }
 ```
@@ -359,7 +359,7 @@ public class Test{
 
 - 实例构造方法<init>需要显示的调用父类的构造函数，而类的<clinit>方法不需要调用父类的构造函数。虚拟机会确保子类的<clinit>方法执行之前已经执行了父类的<clinit>方法。因为jvm中第一个执行的<init>方法的类肯定是java.lang.Object
 
-- 接口也需要通过<clinit>方法为接口中定义的静态成员变量显示初始化。接口中不能使用静态代码块，但是仍然有变量初始化的赋值操作，因此接口与类一样都会生成<clinit>方法。不同的是，执行接口的<clinit>方法不需要先执行父接口的<clinit>方法。只有当父接口中的静态成员变量被使用到的时候才会执行父类的<clinit>方法。
+- 接口也需要通过<clinit>方法为接口中定义的静态成员变量显示初始化。接口中不能使用静态代码块，但是仍然又变量初始化的赋值操作，因此接口与类一样都会生成<clinit>方法。不同的是，执行接口的<clinit>方法不需要先执行父接口的<clinit>方法。只有当父接口中的静态成员变量被使用到的时候才会执行父类的<clinit>方法。
 
 - 虚拟机会保证在多线程中一个类的<clinit>方法被正确的加锁，同步。多线程同步时会去初始化一个类时，只会有一个线程去执行该类的<clinit>方法，其他线程都被阻塞等待，直到活动线程的<clinit>方法被执行完毕。同一个类加载器下，一个类型只会初始化一次。
 
@@ -428,7 +428,7 @@ JVM的类加载是通过ClassLoader及其子类来完成的，类的层级关系
 
 - 虚拟机遇到new指令时，会检查这个指令的参数在常量池中是否定位到个类的符号引用，并且去检查这个符号是否被加载、解析、初始化过，如果没有必须完成类的加载过程
 
-- 检查通过后，为新生对象分配内存空间。对象所需的内存空间的大小是在类加载完成后就能够确定的，为对象分配内存空间的任务就相当于将一定大小的内存空间从java堆中划分出来。
+- 检查通过后，为新生对象分配内存空间。对象所需的内存空间的大小实在类加载完成后就能够确定的，为对象分配内存空间的任务就相当于将一定大小的内存空间从java堆中划分出来。
 
   > 假如堆中空间绝对的规整，所有用过的堆分配在一边，没有使用过的内存空间分配在一边，中间的分界点称为指示器，这种分配方式则称作指针碰撞（Bump the Pointer）
 
@@ -437,7 +437,7 @@ JVM的类加载是通过ClassLoader及其子类来完成的，类的层级关系
   > 问题： 并发情况下，出现正在给A对象分配内存，指针还没有来得及修改，对象B又同时使用了原来的指针分配内存。
   >
   > - 解决办法：a. 对分配的动作进行同步处理（原子性），实际上JVM采用的CAS配上失败重试的方法保持原子性。
-  > - b. 不同线程分配在不同的空间，每个线程在JAVA堆中预先分配一小块内存区域，即TLAB（Thread Local Allocation Buffer）。哪个线程要分配内存，就在那个线程的TLAB空间先分配，当TLAB的内存使用完了才需要同步锁定。
+  > - b. 不用线程分配在不同的空间，每个线程在JAVA堆中预先分配一小块内存区域，即TLAB（Thread Local Allocation Buffer）。哪个线程要分配内存，就在那个线程的TLAB空间先分配，当TLAB的内存使用完了才需要同步锁定。
   >   - 通过-XX:+/-UserTLAB,设计是否使用TLAB
 
 - 内存分配完成后，虚拟机将分配到的内存空间都初始化为零值。如果使用了TLAB，则这一过程提前至TLAB分配时进行。这一步保证了对象不被赋值也可以使用，程序能够访问到这些字段的数据类型对应的零值（0，null，false等）
@@ -461,7 +461,7 @@ JVM通过双亲委派模型进行类的加载，当然我们也可以通过集�
 
 - [ ] 既然JVM提供了默认的类加载器，为什么还要自定义类加载器？
 
-  因为java中默认提供的ClassLoader，只加载指定目录下的jar 和 class，如果我们想要加载其他位置的类或者jar时，就需要自定义类加载器
+  因为java中默认提供的ClassLoader，只加载指定目录下的jar 和 class，如果我们想要加载其他位置的类或者jar时
 
 #### 破坏双亲委派模型
 
@@ -473,7 +473,7 @@ JVM通过双亲委派模型进行类的加载，当然我们也可以通过集�
 
 以Driver接口为例，由于Driver接口定义在jdk中，而其由各个数据库提供商来实现，比如mysql 就提供了 MYSQL Connector，这些实现类都是放在classpath目录下的。
 
-那么问题来了，DriverManager（也由JDK提供）要加载各个实现了Driver接口的实现类（classpath），然后进行管理，但是DriverManager由启动类加载器加载，而其实现类是由服务提供商提供的，由应用程序类加载器加载，这个时候启动类加载器就需要委托应用类加载器来加载Driver的实现，从而破坏双亲委派模型。
+那么问题来了，DriverManager（也由JDK提供）要价在各个实现了Driver接口的实现类（classpath），然后进行管理，但是DriverManager由启动类加载器加载，而其实现类是由服务提供商提供的，由应用程序类加载器加载，这个时候启动类加载器就需要委托应用类加载器来加载Driver的实现，从而破坏双亲委派模型。
 
 ![image-20200515200215123](upload\image-20200515200215123.png)
 
@@ -495,7 +495,7 @@ JDK1.8及以后，Hotspot 虚拟机对于方法区的实现称为“元空间”
 
 Hotspot运行时数据区
 
-![image-20200518111931133](upload\image-20200518111931133.png)
+![image-20200516101415630](upload\image-20200516101415630.png)
 
 #### 分配JVM内存空间
 
@@ -552,6 +552,8 @@ Hotspot运行时数据区
    - 方法字节码
    - 操作数栈和该方法在栈帧中的局部变量区大小
    - 异常表
+
+5. 方法信息
 
 6. 类变量
 
@@ -614,9 +616,7 @@ Hotspot运行时数据区
 
 ##### 存储内容
 
-class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项是常量池，用于存放编译时产生的各种字面量和符号引用。这部分内容将在类加载后进入方法区的运行时常量池中存放。（jdk1.6 在 方法区，jdk1.7以后在java堆中）
-
-方法区jdk1.7 在永久代 （java 堆中） jdk1.8移动到了 元空间（不属于堆内存）
+class文件中除了有类的版本、字段、方法、接口等描述信息外，还有一项是常量池，用于存放编译时产生的各种字面量和符号引用。这部分内容将在类加载后进入方法区的运行时常量池中存放。
 
 > - 字面量
 >   - 双引号引起来的字符串， “KBB”.
@@ -665,536 +665,8 @@ JDK1.7可以通过一个参数设置stringtable的长度
 - 根据字符串的hacode找到对应的entry。如果没有冲突，它可能只是一个entry，如果有冲突，它可能是一个链表，然后再JAVA遍历链表。匹配对应的字符串
 - 如果找到字符串，返回引用，如果没有，会把字符串放入常量池中，并把引用保存到stringtable中
 
-![image-20200518112405249](upload\image-20200518112405249.png)
 
-##### 字符串常量池介绍
-
-java为了节省空间而设计的一个内存区域，java中所有的类共享一个字符串常量池。
-
-> 比如A类中需要一个“hello”的字符串，B类也同样需要一个字符串常量，他们都是从字符串常量池中获取该字符串，并且获取到的字符串常量地址都是一样的。
-
-```shell
-1.单独使用 “” 符号创建的字符串都是常量，编译器就已经确定存储到String pool中。
-2.使用new String("")创建的对象会存储到heap中，是运行期创建的。
-3.使用只包含字符常量的字符串连接符如 “aa” + “bb” 创建的也是常量，编译器就已经存储到String pool中了
-4.使用包含变量的字符串连接符如“aa” + s 创建的对象时在运行期创建的，存储在heap。
-5.运行期间可以通过String.intern()方法向String pool中动态添加对象 。
-```
-
-##### 字符串常量池案例分析
-
-```java
-String a = new String("haha");
-System.out.println(a.intern() == a); // false
-// 因为 双引号括起来的字符串，所以 “haha” 会被我们添加到字符串常量池中，它的引用是String的char数组的地址，会被我们添加到stringtable中，所以a.intern()的时候，其实返回的是string中的char数组地址，和a的string实例化地址肯定不一样
-```
-
-```java
-String e = new String("jo") + new String("hn");
-System.out.println(e.intern() == e); // true
-
-// new String("jo")  + new String("hn") 实际上会转换成一个StringBuffer的append然后toString()出来，实际上new一个新的String出来。在这个过程中，并没有双引号引起来的 john，也就是说不会执行ldc把 john 的引用添加到stringtable中，所以intern()的时候实际就是将新的string的地址（e的地址）添加到stringtable中并且返回出来。所以最后的结果为true。
-```
-
-```java
-String f = new String("ja") + new String("va");
-System.out.println(e.intern() == e); // false
-
-// 因为java在启动的时候会将一部分字符串添加到字符串常量池中，而 “java”就是其中之一，所以intern 回来的引用 实际是早已经在 常量池中添加好的 “java”的引用，所以地址自然和f 的地址不一样。
-```
 
 ![image-20200513141259589](upload\image-20200513141259589.png)
 
-### JAVA堆
-
-java堆被所有线程共享。在java虚拟机启动时创建，是虚拟机管理的最大的一块内存。
-
-java堆是垃圾回收的主要区域。而且主要采用分代回收算法。堆的进一步划分，主要是为了更好的回收内存或者更快的分配内存。
-
-#### 堆内存的划分
-
-- 新生代
-
-  - 伊甸园 （Eden空间） 
-  - From Survivor   
-  - To Survivor
-
-  Eden ： From Survivor: To Survivor = 8:  1 : 1 （可以通过 -XX:SurvivorRatio来设置）
-
-- 老年代
-
-堆大小 = 新生代 + 老年代 ，可以通过参数 -Xms （初始容量） 、 -Xmx （最大容量）来指定
-
-![image-20200518123750117](upload\image-20200518123750117.png)
-
-![image-20200518123826933](upload\image-20200518123826933.png)
-
-#### 对象创建
-
-```java
-Student student = new Student();
-```
-
-![对象创建流程](upload/对象创建流程 .png)
-
-内存分配原则
-
-> 1. 优先在Eden分配，如果Eden空间不足，虚拟机会进行一次MinorGC
-> 2. 大对象直接进入老年代，大对象一般指的是很长的字符串或者数组。
-> 3. 长期存活的对象进入老年代。每一个对象都有一个age。当age到达指定的年龄就会进入老年代，默认是15岁。这个信息存储在对象头中
-
-内存配有两种方式
-
-| 分配方法 | 说明             | 收集器                      |
-| -------- | ---------------- | --------------------------- |
-| 指针碰撞 | 内存地址是连续的 | Serial和ParNew收集器        |
-| 空闲列表 | 内存地址不连续   | CMS收集器和Mark-Sweep收集器 |
-
-内存分配线程安全问题
-
-在分配内存的同时，会存在线程安全问题，即虚拟机给A线程分配内存过程中，指针未修改，B线程可能同时使用了同样一块内存。
-
-在jvm中有两种解决方案：
-
-1. CAS,比较和交换（Compare And Swap）,CAS是乐观锁的一种实现方式。所谓的乐观锁就是，每次不加锁而是采用没有冲突的方式去完成某项操作，如果因为冲突失败就重试，直到成功为止。虚拟机采用CAS配上失败重试保证了更新操作的原子性。
-2. TLAB，本地线程分配缓冲（Threa Local Allocation Buffer）：为每一个线程分配一块内存，JVM在给线程中的对象分配内存时，首先会在TLAB上分配，如果当TLAB中的剩余内存已经用尽时，再采用上述的CAS进行内存分配。
-
-#### 对象内存布局
-
-1. 对象头（header）
-   1. 存储对象自身的运行数据：如 hashcode、GC分带年龄、锁状态标志、线程持有的锁、偏向线程ID、偏向时间戳等。
-   2. 类型指针：即对象指向它的类的元数据的指针
-
-1. 实例数据 (Instance data)：存储的是对象真正有效的信息。
-2. 对齐填充 (padding)：没啥特别的含义。在JVM中对象的大小必须是8字节的整数倍，对象头也是8字节的整数倍，当对象的实例数据没有对齐时，就需要通过对齐填充来补全。
-
-##### 对象访问方式
-
-| 方式     | 优点                                   |
-| -------- | -------------------------------------- |
-| 句柄     | 稳定，对象被移动只需要修改句柄中的地址 |
-| 直接指针 | 访问速度快，节省了一次指针定位的开销   |
-
-![image-20200518150719824](upload\image-20200518150719824.png)
-
-### 程序计数器
-
-程序计数器也叫作PC寄存器，**”线程私有“**内存、是一块很小的内存空间，它可以看作是当前线程所执行的字节码指令的行号指示器。字节码解释器的工作就是通过改变这个计数器的值来选取下一条要执行的字节码指令。分支、循环、跳转、异常结束、线程回复都需要依赖这个计数器来完成。
-
-##### 存储的数据
-
-如果一个线程正在执行的是一个java方法，这个计数器记录的是正在执行的虚拟机的字节码指令的地址，如果正在执行的是一个Native方法，则这个计数器的值为空。
-
-此区域是唯一一个java的虚拟机中规定没有任何OutOfMemoryError异常的区域。
-
-### JAVA虚拟机栈
-
-虚拟机栈线程私有，而且生命周期和线程相同。每一个java方法都会在执行时创建一个栈帧。
-
-![image-20200518175009991](upload\image-20200518175009991.png)
-
-##### 栈帧
-
-栈帧（Stack Freme）用于支持虚拟机进行方法调用和方法执行的数据结构。栈帧中存储了局部变量表、操作数栈、动态链接、返回地址等信息。每一个方法从调用到执行完成的整个过程，都对应着一个栈帧在虚拟机中出栈入栈的过程。
-
-###### 局部变量表
-
-局部变量表是一组变量值存储空间，用于存放方法参数和方法内部定义的局部变量。
-
-一个局部变量表可以保存一个类型为boolean、byte、char、short、int、float、reference和returnAddress类型的数据。reference类型表示对一个对象实例的引用。returnAddress类型为jsr、jsr_w和ret指令服务的，现在用的很少了。
-
-局部变量表的容量是以变量槽（Variable Slot）为最小单位的，Java虚拟机规范中没有定义一个槽所应该占用的内存空间的大小。但是规定了一个槽应该可以存放一个32位以内的数据类型。
-
-虚拟机通过索引定位的方法查找相应的局部变量，索引的范围从0~局部变量表最大容量。如果Slot是32位的，则遇到一个64位的数据类型的变量（如long和double时），会连续使用两个Slot来存储。
-
-###### 操作数栈
-
-操作数栈是一个后入先出的队列（LIFO）。当一个方法刚刚开始执行的时候，操作数栈是空的。随着方法和字节码指令的执行，会从局部变量表或者对象实例字段中复制常量或者变量写入操作数栈，在随着计算的进行将操作数栈中的元素出栈到局部变量表或者返回给方法的调用者，也就是出栈/入栈的操作。一个完整的方法执行期间往往包含很多这样的出入栈过程。
-
-###### 动态链接
-
-在一个class文件中，一个方法要调用其他的方法。需要将这些方法的符号引用转化成在内存地址中的直接引用，而符号引用存在于方法区的运行时常量池中。
-
-java虚拟机栈中，每一个栈帧都会包含一个执行运行时常量池中该栈帧所属方法的符号引用。持有这个引用的目的是为了支持方法调用过程中的动态链接（Dynamic Linking）。
-
-这些符号引用一部分会在类加载阶段或者第一次使用时直接转换成直接引用，这类转化称为静态解析，另外一部分会在运行期间转化成直接引用，这类转化称为动态链接。
-
-###### 方法返回
-
-- 正常返回
-
-  具体是否有返回值以及返回值的类型将根据方法返回的字节码指令去确定
-
-- 异常返回：方法执行过程中出现异常，并且这个异常在方法体内部内有处理，导致方法退出。
-
-##### 栈异常
-
-如果线程请求的深度大于虚拟机所允许的深度，会抛出StackOverFlowError异常
-
-虚拟机栈可以动态扩展，当扩展时无法申请到足够内存时，就会抛出OutOfMemoryError异常。
-
-### 本地方法栈
-
-为虚拟机使用到的Native方法服务，比如C++的方法
-
-一个Native Method 就是一个java调用非Java代码的接口。该方法的实现由非Java代码编写。
-
-```java
-public class IHaveNatives {
-    native public void Native1(int x);
-    native static public long Native2();
-    native synchronized private float Native3(Object o);
-    native void Native4(int[] array) throws Exception;
-}
-```
-
-native可以与其他的java标识符连用，但是abstract除外。
-
-## 垃圾回收
-
-### 判断算法
-
-- 引用计数法：给对象添加一个引用计数器，当有一个地方引用到它时，计数器就加1；当引用失效时，计数器就减1；任何时刻计数器为0的对象就是不可能再被使用的。缺点：很难解决对象之间的相互循环引用问题。
-
-- 根搜索算法（GCRoot Tracing）：又叫做可达性算法
-
-
-> 基本思路就是通过一系列的“GCRoot”对象作为起始点，从这些节点开始向下搜索。搜索所走过的路径称作引用链（Reference Chain），当一个对象到GCRoot没有任何引用链相连接，就证明此对象是不可用的。
-
-可做GCRoot的对象
-
-- 虚拟机栈（栈帧中的本地变量表）中的引用对象
-- 方法区中的类的静态属性引用对象
-- 方法区中常量的引用对象
-- 本地方法栈中JNL(Native方法)的引用对象
-
-#### 对象引用
-
-强引用，软引用，弱引用，虚引用。这四种引用强度一次逐渐减弱。
-
-强引用：类似 “Object object = new Object()”，只要引用关系还在，就不会被GC
-
-软引用：内存溢出之前被回收，如果内存不够，才会抛异常
-
-弱引用：非必须引用，只要有GC，就会被回收
-
-虚引用：垃圾回收时回收，无法通过引用渠道对象值
-
-#### 回收过程
-
-要真正宣告一个对象死亡，至少要经过两次标记的过程
-
-1. 第一次标记：如果对象在可达性分析后发现没有与GCRoots相连接的引用链，它将会被第一次标记。
-2. 第二次标记：第一次标记后会接着进行一轮筛选，筛选的条件是此对象是否有必要执行finalize()方法。在finalize()方法中没有重新与引用链建立关系的。
-
-#### 方法区回收
-
-方法区也是有垃圾回收的，主要回收废弃常量和无用的类。
-
-废弃常量：字符串常量，没有对象引用即可回收
-
-无用的类：
-
-- 该类的所有实例都已经被回收，也就是说java堆中不存在该类的任何实例
-- 加载该类的classLoader已经被回收
-- 该类对应的java.lang.Class对象在任何地方没有被引用，也无法通过反射访问该类的方法。
-
-> 在大量使用反射，动态代理，CGLib等bytecode框架的场景，以及动态生成jsp和osgi这类频繁自定义ClassLoader的场景下，都需要虚拟机具备类卸载的功能，以保证**永久代**不会溢出。（类信息存储在永久代（jdk1.7及以前），JDK1.8（存储在元空间）） 永久代和元空间是方法区的实现。
-
-
-
-### 垃圾回收的回收收集算法
-
-#### 1. 标记清除法（Mark-Sweep）
-
-主要分为标记和清除两个阶段。首先标记出所有需要回收的对象，在标记完成后同意回收掉所有被标记的对象。
-
-缺点是效率不高，会产生空间碎片。
-
-#### 2. 复制回收算法
-
-为了解决效率问题，它可以将内存按照容量划分为两块，每一次只是用其中的一块，当这一块的内存试用完了，就将还存活的对象复制到另外一块内存上去，然后再把已经使用过的内存空间一次清理掉。
-
-现在商业虚拟机都是采用这种收集算法来回收新生代，当回收时，将Eden和Survivor中存活的对象拷贝到另外一个Survivor空间上去，最后清理掉Eden和刚才用过的Survivor空间。
-
-Hotspot虚拟机默认Eden 和 From Survivor 和 To Survivor的大小比例设置为8:1:1 ，也就是每次新生代中可用内存为新生代总容量的90%，只有10%的内存会被“浪费”的，当Survivor空间不够用的时候，需要依赖其他内存（这里指的是老年代）进行**分配担保（Handle Promotion）**。
-
-#### 3. 标记整理算法
-
-老年代没人担保，不能用复制回收算法，可以用标记-整理算法，将存活对象都向一端移动，然后直接清理掉端编辑以外的内存。
-
-#### 4. 分代回收算法
-
-当前商用虚拟机都是采用这种回收算法。根据对象的存活周期将内存划分为几块。
-
-- 新生代，选择复制算法
-- 老年代，选择标记-清除 / 标记-整理算法
-
-#### 内存分配担保
-
-##### 客户端内存担保
-
-jvm参数配置：
-
-```java
--Xms20M -Xmx20M -Xmn10M -XX：+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseSerialGC
-```
-
-![image-20200519094516474](upload\image-20200519094516474.png)
-
-指定垃圾收集器为**Serial + Serial Old**的收集器组合进行内存回收。
-
-```java
-public class HandlePromotionFaliure{
-    private static final int _1MB =  1024 * 1024;
-    
-    /**
-    *VM参数： -Xms20M
-    		 -Xmx20M
-    		 -Xmn10M
-    		 -XX:+PrintGCDetails
-    		 -XX:SurvivorRatio=8
-    		 XX:+UseSerialGC
-    		 -XX:-HandlePromotionFailure
-    */
-    public static void testHandlePromotion() {
-        byte[] allocation1,
-        	   allocation2,
-        	   allocation3,
-        	   allocation4;
-        allocation1 = new byte[2 * _1MB];
-        allocation1 = new byte[2 * _1MB];
-        allocation1 = new byte[2 * _1MB];
-        allocation1 = new byte[4 * _1MB];
-    }
-    
-    public static void main(String[] args) {
-        testHandlePromotion();
-    }
-}
-```
-
-然后运行程序，查看GC日志
-
-![image-20200519095117944](upload\image-20200519095117944.png)
-
-本次GC期间，虚拟机发现Eden space 的三个对象（6MB）无法放回Survivor空间（survivor 1MB），这时候JVM启动了内存担保机制，将前面三个对象放入老年代，Eden 空间被腾出来，将第四个对象放入Eden
-
-##### 服务端模式下的担保机制
-
-JVM参数配置
-
-```java
--Xms20M -Xmx20M -Xmn10M -XX：+PrintGCDetails -XX:SurvivorRatio=8 -XX:+UseParallelGC
-```
-
-server模式下的ParallelGC收集器组合（Parallel Scavenge + Serial Old），在GC之前会进行一次判断，**如果要分配的内存>= Eden区域大小的一半，那么直接进入老年代，否则才会进入担保机制。**
-
-[总结：]()
-
-[内存分配时在JVM分配内存的时候，新生代的内存不足时，把新生代的内存搬到老年代，然后新生代腾出来的空间用于为分配给最新的对象。这里老年代是担保人，在不同的GC下，也就是不同的垃圾回收期的组合下，担保机制略有不同，在Serial + Serial Old 的情况下，发现Eden 放不下直接启动担保机制；在Parallel Scanenge + Serial Old的情况下，却需要判断下要分配的内存是不是大于等于Eden大小的一般，如果是那么直接将对象放入老年代，否则才会启动担保机制。]()
-
-### 垃圾回收器
-
-垃圾回收器是垃圾回收算法（复制算法，标记-清除，标记-整理，分代回收算法）的具体实现。Hotspot中七种垃圾收集器：Serial、ParNew、Parallel、Scavenge、Serial Old、Parallel Old、CMS、G1。
-
-  ![image-20200519103425486](upload\image-20200519103425486.png)
-
-两个收集器之间有连线，代表他们可以搭配使用：
-
-1. Serial/Serial Old
-
-2. Serial/CMS
-
-3. ParNew/CMS
-
-4. ParNew/Serial Old
-
-5. Parallel Scavenge/Serial Old
-
-6. Parallel Scavenge/Parallel Old
-
-7. G1
-
-并发垃圾收集器和并行收集器
-
-并行（Parallel）
-
-[指多条垃圾收集线程并行工作，但此时用户线程仍然处于等待状态]()
-
-如ParNew 、Parallel Scavenge 、 Parallel Old
-
-并发（Concurrent）
-
-[指用户线程和垃圾回收器同时执行（但不一定是并行的，可能交替执行）]()
-
-#### Minor GC 、Major GC 和 Full GC之间的区别
-
-**Minor GC** ：新生代的GC（包括Eden和Survivor），Minor GC非常频繁，回收速度也比较快
-
-当年轻代满的时候，会触发Minor GC，这里的年轻代满指的是Eden满，Survivor满不会触发GC。
-
-**Major GC**:老年代GC,Major GC速度一般比Minor GC快10倍以上。
-
-**Full GC**： Minor GC + Major GC，清理整个堆内存空间包括年轻代和**永久代（ <=jdk1.7 ）**。
-
-> 调用System.gc时，系统建议进行Full GC
->
-> 老年代空间不足
->
-> 方法区空间不足
->
-> 通过Minor GC后进入老年代的平均大小大于老年代的可用内存
->
-> 年轻代需要把对象转存到老年代，切老年代的可用内存大小小于该对象的大小。
-
-#### Serial 收集器
-
-[serial（串行）]()垃圾收集器是最基本，发展历史最久的收集器。
-
-采用[复制算法]()，[单线程收集]()
-
--XX:+UseSerialGC 添加该参数来显示的使用串行垃圾收集器。
-
-[Stop TheWorld说明]()：JVM在后台自动发生和自动完成的，在用户不可见的情况下，把用户正常工作的线程全部停掉，即GC停顿。
-
-[Serial 和 Serial Old]()组合收集器运行示意图如下：
-
-![image-20200519111331275](upload\image-20200519111331275.png)
-
-#### ParaNew收集器
-
-ParNew收集器是Serial收集器的多线程版本。
-
-ParNew/Serial Old组合收集器运行示意图：
-
-![image-20200519111627853](upload\image-20200519111627853.png)
-
-参数设置
-
--XX:+UseConcMarkSweepGC：指定使用cms后，会默认使用ParNew作为新生代的垃圾回收器
-
--XX:+UseParNewGC ：强制使用ParNew垃圾收集器
-
--XX:ParallelGCThreads:指定垃圾收集器线程数，默认线程数和CPU数量相同。
-
-为什么只有ParNew能够与CMS收集器配合使用
-
-CMS是HotSpot 在JDK1.5的一款并发收集器，让收集器线程和用户线程同时工作。CMS作为老年代收集器，无法与JDK1.4新生代的收集器Parallel Scavenge配合工作；因为Parallel Scavenge（以及G1）都没有使用传统的GC收集器代码框架，而另外独立实现；而其余集中收集器则公用了部分代码框架。
-
-#### Parallel Scavenge收集器
-
-吞吐量收集器（Throughput Collector）
-
-特点：
-
-- 新生代收集器
-- 采用复制算法
-- 多线程收集器
-
-与其他收集器不同的是其他收集器关注的是如何缩短用户线程的停顿时间，而Parallel Scavenge收集器关注的是[达到一个可控制的吞吐量]()
-
-参数设置：
-
--XX:MaxGCPauseMillis :最大垃圾收集器停顿时间，大于0毫秒
-
--XX:GCTimeRatio:垃圾收集时间占用总时间的比率， 0<n<100的整数。
-
-![image-20200519112738191](upload\image-20200519112738191.png)
-
-#### Serial Old收集器
-
-serial old 是 serial 收集器的老年代的版本，单线程收集，[采用标记-整理收集算法]()
-
-主要用于client模式
-
-在jdk1.5之前，与Parallel Scavenge收集器搭配使用（JDK1.6有了Parallel Old收集器）
-
-#### Parallel Old收集器
-
-Parallel Old是 Parallel Scavenge 新生代收集器的老年代版本。jdk1.6中才开始提供
-
-针对老年代，采用标记-整理算法，多线程收集器。在jdk1.6之后替代Serial Old收集器。特别是在Server模式下，多cpu的情况下。
-
-参数设置：
-
--XX:+UseParallelOldGC 指定使用Parallel Old 收集器。
-
-#### CMS收集器
-
-并发标记清理（Concurrent Mark Sweep，CMS）收集器也被称作并发低停顿收集器
-
-1. 特点
-
-   针对老年代，基于标记-清除算法（不进行压缩操作，会产生内存锁片）
-
-   以获得低停顿时间为目标
-
-   并发收集，低停顿
-
-   HotSpot 在 jdk1.5提出来的真正意义上的并发（Concurrent）收集器。
-
-2. 应用场景
-
-   与用户交互场景比较多的场景；希望系统停顿时间最短，注重服务的响应速度。
-
-   以给用户带来更好的体验，如常见的WEB、B/S系统的服务上的应用。
-
-3. 参数设置
-
-   -XX:+UseConcMarkSweepGC：指定使用CMS收集器。
-
-4. CMS收集器的运作过程，主要分为4个步骤
-
-   > (A). 初始标记
-   >
-   > (B). 并发标记
-   >
-   > (c). 重新标记
-   >
-   > (d). 并发清除
-
-   ![image-20200519115123713](upload\image-20200519115123713.png)
-
-   cms收集器的3个明显缺点
-
-   1. 对cpu资源异常敏感： cms默认收集器线程数量=（cpu数量+3）/ 4；
-   2. 无法处理浮动垃圾
-   3. 产生大量内存碎片：产生大量不连续的碎片导致分配大内存对象的时候，无法找到足够连续的内存空间，从而需要提前触发一次Full GC。由于空间不再连续，CMS可能需要使用“空闲列表”的方式来分配内存，这比“指针碰撞”的方式内存消耗大。
-
-#### G1收集器
-
-G1 （Garbage-First）是 JDK1.7-U4推出来的商用收集器。
-
-特点：
-
-1. 并行与并发
-2. 分代收集
-3. 结合多种垃圾回收算法，空间整合，不产生碎片
-4. 可预测的停顿，停顿的同时实现高吞吐量
-
-应用场景：
-
-面向服务端应用，针对具有大内存，多处理器的机器。
-
-主要应用降低GC延迟，并且具有大堆的应用程序提供解决方案。
-
-参数设置：
-
--XX:+UseG1GC
-
--XX:InitiatingHeapOccupancyPercent：当整个java堆的占用率达到某个参数的时候，开始并发标记阶段；默认45
-
--XX:MaxGCPauseMillis: 为G1设置暂停时间目标，默认为200毫秒
-
--XX:HeapRegionSize: 设置每一个Region大小，范围1M到32M；目标是在最小JAVA堆时可以拥有约2048个Region；
-
-G1收集器运作过程
-
-1. 初始标记
-2. 并发标记
-3. 最终标记
-4. 筛选回收
-
-## GC日志
-
+![image-20200513215336719](upload\image-202005132153367？“
