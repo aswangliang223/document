@@ -239,3 +239,19 @@ public class LuaRedisSchedulePlus {
 ![](http://q8sats5bw.bkt.clouddn.com/img/image-20200409114526056.png)
 
 具体详情参考 ： https://www.cnblogs.com/rgcLOVEyaya/p/RGC_LOVE_YAYA_1003days.html
+
+
+
+# redis 分布式锁
+
+一个完备的分布式锁需要具备以下几种特性
+
+- 互斥性
+- 超时释放
+- 可重入
+- 高性能和高可用
+- 阻塞或者非阻塞
+
+### 使用setnx 实现分布式锁
+
+以该锁作为key设置一个随机的value，如果setnx 返回1，则说明获得到该线程已经获得锁，
